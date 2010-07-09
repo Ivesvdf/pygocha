@@ -1,15 +1,28 @@
 class PyGoCha:
-	thisSeries = list()
-	__title = ''
-
 	def __init__(self):
 		self.__title = ''
-		self.thisSeries = list()
+		self.__thisSeries = list()
+		self.__legendOnly = False
+		self.__data = list() 
+		self.__labels = list() 
 
 	def title(self, newTitle):
 		self.__title = newTitle
 
+	def legendOnly(self):
+		self.__legendOnly = True
+
+	def data(self, value):
+		self.__thisSeries.append(value)
+
+	def label(self, label):
+		self.__labels.append(label)
+
 	def getURL(self, width, height):
+		# Place the contents of the working series in 
+		# data
+		self.newSeries()
+
 		url = "http://chart.apis.google.com/chart?cht="
 		url += self.graphName()
 
@@ -21,28 +34,33 @@ class PyGoCha:
 
 		total = 0
 
-		for point in self.thisSeries:
-			total += point[0]
+		pointStrings = list()
 
-		rescaled = list()
+		for series in self.__data:
+			for point in series:
+				total += point
 
-		for point in self.thisSeries:
-			rescaled.append((100.0*point[0]/total, point[1]))
-		
-		points = map(lambda x: str(x[0]), rescaled)
-		
-		url += ','.join(points)
+			rescaled = list()
 
-		labels = map(lambda x: x[1], rescaled)
+			for point in series:
+				rescaled.append(str(100.0*point/total))
+			
+			pointStrings.append(','.join(rescaled))
 
-		url += '&chl=' + '|'.join(labels)
+		url += '|'.join(pointStrings)
+
+		if self.__legendOnly:
+			url += '&chdl='
+		else:
+			url += '&chl='
+
+		url += '|'.join(self.__labels)
 		url += self._afterURL()
 
 		return url
 		
-
-	def datapoint(self, value, label):
-		self.thisSeries.append((value, label))
+	def newSeries(self):
+		self.__data.append(self.__thisSeries)
 
 	def _afterURL(self):
 		return ''
@@ -60,6 +78,10 @@ class Pie(PyGoCha):
 			plus += '&chp=' + str(self.__rotate)
 
 		return plus
+
+	def slice(self, percentage, label):
+		self.data(percentage)
+		self.label(label)
 
 class ThreeDPie(Pie):
 	def graphName(self):
