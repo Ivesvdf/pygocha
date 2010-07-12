@@ -1,3 +1,23 @@
+# Copyright (c) 2010 Ives van der Flaas
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
 class PyGoCha:
 	def __init__(self):
 		self.__title = ''
@@ -12,21 +32,30 @@ class PyGoCha:
 		self.__customAxes = dict()
 
 	def title(self, newTitle):
+		""" Sets the graph title"""
 		self.__title = newTitle
 
 	def legendOnly(self):
+		""" Disables lables on the x-axis and enables the graph
+		legend"""
 		self.__legendOnly = True
 
 	def data(self, value):
+		""" Adds a data point to the current graph """
 		self.__thisSeries.append(value)
 
 	def label(self, label):
+		""" Adds a x-axis label"""
 		self.__labels.append(label)
 
 	def margins(self, left, right, top, bottom):
+		""" Sets margins of the graph for respectively left, right,
+		top and bottom edges """
 		self.__margins = (left, right, top, bottom)
 
 	def getURL(self, width, height):
+		""" Returns the url that is to be GET'ed in order to view the
+		resulting graph"""
 		# Place the contents of the working series in 
 		# data
 		self.newSeries()
@@ -107,6 +136,7 @@ class PyGoCha:
 		return url
 		
 	def newSeries(self):
+		""" Starts a new data series. """
 		self.__data.append(self.__thisSeries)
 		self.__thisSeries = list()
 
@@ -118,6 +148,8 @@ class PyGoCha:
 #		self.__xStep = step
 
 	def showYAxis(self, step):
+		""" Makes the y axis visible and sets the step (distance
+		between marks) """
 		self.__visibleAxes.append('y')
 		self.__yStep = step
 
@@ -136,6 +168,7 @@ class Pie(PyGoCha):
 	__rotate = 0.0
 
 	def rotate(self,radians):
+		""" Rotates the pie clockwise for "radians" radians. """
 		self.__rotate = radians
 
 	def _afterURL(self):
@@ -147,6 +180,8 @@ class Pie(PyGoCha):
 		return plus
 
 	def slice(self, percentage, label):
+		""" Puts the label "label" on "percentage" percent of the pie.
+		"""
 		self.data(percentage)
 		self.label(label)
 
@@ -165,12 +200,22 @@ class BarChart(PyGoCha):
 		self.__barColors = list()
 
 	def setSeriesColor(self, color):
+		""" Call this function for every series and the bars for that
+		series will have the color "color". Send color in string
+		format in HHHHHH format, H being a hexadecimal number, for
+		example '0000FF' for blue. """
 		self.__seriesColors.append(color)
 
 	def setBarColor(self, color):
+		""" Call this function for every bar and the respective bar
+		will have the color you choose for it (same format as
+		setSeriesColor). This will probably act weirdly if you're
+		using multiple series. Sorry."""
 		self.__barColors.append(color)
 
 	def bar(self, data, label):
+		""" Adds a new bar to the graph with height "data" and x-axis
+		label "label" """
 		self.data(data)
 		self.label(label)
 
