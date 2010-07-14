@@ -1,4 +1,4 @@
-# Copyright (c) 2010 Ives van der Flaas
+# Copyright (c) 2010 Ives van der Flaas (http://code.google.com/p/pygocha/)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -198,6 +198,7 @@ class BarChart(PyGoCha):
 		PyGoCha.__init__(self)
 		self.__seriesColors = list()
 		self.__barColors = list()
+		self.__makeBarsFit = False
 
 	def setSeriesColor(self, color):
 		""" Call this function for every series and the bars for that
@@ -213,6 +214,12 @@ class BarChart(PyGoCha):
 		using multiple series. Sorry."""
 		self.__barColors.append(color)
 
+	def makeBarsFit(self):
+		""" Calling this function will make sure the width of the data
+		bars is varied in such a way that the complete width is
+		filled, exactly. """
+		self.__makeBarsFit = True
+
 	def bar(self, data, label):
 		""" Adds a new bar to the graph with height "data" and x-axis
 		label "label" """
@@ -227,6 +234,9 @@ class BarChart(PyGoCha):
 
 		if len(self.__barColors) > 0:
 			extra += '&chco=' + '|'.join(self.__barColors)
+
+		if self.__makeBarsFit:
+			extra += '&chbh=a'
 
 		return extra
 
